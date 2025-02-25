@@ -93,27 +93,56 @@
 <body>
 
     <h1>ナンジャモンジャ 名前登録</h1>
+    <select id="version-select" onchange="updateImages()">
+        <option value="shiro">ナンジャモンジャ シロ</option>
+        <option value="midori">ナンジャモンジャ ミドリ</option>
+        <option value="special">ナンジャモンジャ スペシャルエディション</option>
+    </select>
+    
     <div class="container" id="card-container"></div>
     <br>
     <button class="delete-btn" onclick="clearAllNames()">全ての名前を削除</button>
 
     <script>
-        // 画像リスト（1.png〜12.png）
-        const imageList = Array.from({ length: 12 }, (_, i) => `images/${i + 1}.png`);
+        // 画像リスト
+        const shiroImages = Array.from({ length: 12 }, (_, i) => `images/${i + 1}.png`);
+        const midoriImages = Array.from({ length: 12 }, (_, i) => `images/${i + 13}.png`);
+        const specialImages = Array.from({ length: 24 }, (_, i) => `images/${i + 1}.png`);
 
         // カードを表示
         const container = document.getElementById("card-container");
 
-        imageList.forEach((src, index) => {
-            const cardDiv = document.createElement("div");
-            cardDiv.className = "card";
-            cardDiv.innerHTML = `
-                <img src="${src}" alt="ナンジャモンジャ${index + 1}">
-                <button class="set-name-btn" onclick="setName(${index})">名前をつける</button>
-                <button class="show-name-btn" onclick="showName(${index})">名前を確認する</button>
-            `;
-            container.appendChild(cardDiv);
-        });
+        // バージョンに合わせた画像を更新
+        function updateImages() {
+            const version = document.getElementById("version-select").value;
+            let imageList = [];
+
+            if (version === "shiro") {
+                imageList = shiroImages;
+            } else if (version === "midori") {
+                imageList = midoriImages;
+            } else if (version === "special") {
+                imageList = specialImages;
+            }
+
+            // 現在の画像をクリア
+            container.innerHTML = '';
+
+            // 新しい画像を表示
+            imageList.forEach((src, index) => {
+                const cardDiv = document.createElement("div");
+                cardDiv.className = "card";
+                cardDiv.innerHTML = `
+                    <img src="${src}" alt="ナンジャモンジャ${index + 1}">
+                    <button class="set-name-btn" onclick="setName(${index})">名前をつける</button>
+                    <button class="show-name-btn" onclick="showName(${index})">名前を確認する</button>
+                `;
+                container.appendChild(cardDiv);
+            });
+        }
+
+        // 初期表示（シロ）
+        updateImages();
 
         // 名前を登録
         function setName(index) {
@@ -140,7 +169,7 @@
         // 全ての名前を削除
         function clearAllNames() {
             if (confirm("本当に消していい？")) {
-                for (let i = 0; i < imageList.length; i++) {
+                for (let i = 0; i < shiroImages.length; i++) {
                     localStorage.removeItem(`card-name-${i}`);
                 }
                 alert("全ての名前を削除しました");
