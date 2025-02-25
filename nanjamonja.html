@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ナンジャモンジャ名前確認</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            width: 45%;
+            background-color: white;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 90%;
+            margin: 5px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .set-name-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .show-name-btn {
+            background-color: #008CBA;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: red;
+            color: white;
+            padding: 12px;
+            font-size: 18px;
+            width: 80%;
+            margin: 20px auto;
+            display: block;
+        }
+
+        /* スマホ向け調整 */
+        @media (max-width: 600px) {
+            .card {
+                width: 90%;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ナンジャモンジャ 名前登録</h1>
+    <div class="container" id="card-container"></div>
+    <br>
+    <button class="delete-btn" onclick="clearAllNames()">全ての名前を削除</button>
+
+    <script>
+        // 画像リスト（1.png〜12.png）
+        const imageList = Array.from({ length: 12 }, (_, i) => `images/${i + 1}.png`);
+
+        // カードを表示
+        const container = document.getElementById("card-container");
+
+        imageList.forEach((src, index) => {
+            const cardDiv = document.createElement("div");
+            cardDiv.className = "card";
+            cardDiv.innerHTML = `
+                <img src="${src}" alt="ナンジャモンジャ${index + 1}">
+                <button class="set-name-btn" onclick="setName(${index})">名前をつける</button>
+                <button class="show-name-btn" onclick="showName(${index})">名前を確認する</button>
+            `;
+            container.appendChild(cardDiv);
+        });
+
+        // 名前を登録
+        function setName(index) {
+            const key = `card-name-${index}`;
+            if (localStorage.getItem(key)) {
+                alert("このナンジャモンジャにはもう名前があります！");
+                return;
+            }
+
+            const name = prompt("このナンジャモンジャに名前をつけてください！:");
+            if (name) {
+                localStorage.setItem(key, name);
+                alert(`「${name}」を登録しました！`);
+            }
+        }
+
+        // 名前を確認
+        function showName(index) {
+            const key = `card-name-${index}`;
+            const name = localStorage.getItem(key);
+            alert(name ? `このナンジャモンジャの名前は「${name}」です` : "まだ名前がつけられていません！");
+        }
+
+        // 全ての名前を削除
+        function clearAllNames() {
+            if (confirm("本当に消していい？")) {
+                for (let i = 0; i < imageList.length; i++) {
+                    localStorage.removeItem(`card-name-${i}`);
+                }
+                alert("全ての名前を削除しました");
+            }
+        }
+    </script>
+
+</body>
+</html>
